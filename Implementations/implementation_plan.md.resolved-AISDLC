@@ -12,7 +12,7 @@ Based on the [AWS AI-DLC blog](https://aws.amazon.com/blogs/devops/ai-driven-dev
 | **Domain-First design** (logic → NFRs → IaC) | Missing from our workflow sequence |
 | **Bolts** (hours/days, not weeks) | No workflow for rapid iteration cycles |
 | **Mob Elaboration / Mob Construction** | No collaborative rituals documented |
-| **AI-driven Operations** (anomaly detection, runbook automation) | [incident-response.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/workflows/incident-response.md) is manual; no AI-driven ops patterns |
+| **AI-driven Operations** (anomaly detection, runbook automation) | [incident-response.md](AI-Tools/.windsurf/workflows/incident-response.md) is manual; no AI-driven ops patterns |
 | **Brown-field elevation** (existing code → semantic models) | No skill for onboarding existing codebases |
 
 ---
@@ -21,13 +21,13 @@ Based on the [AWS AI-DLC blog](https://aws.amazon.com/blogs/devops/ai-driven-dev
 
 ### Rules
 
-#### [MODIFY] [devops-security.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/rules/devops-security.md)
+#### [MODIFY] [devops-security.md](AI-Tools/.windsurf/rules/devops-security.md)
 - Add **Section 9: AI-Assisted Security Review** — rules for how the AI should propose security fixes, seek human validation before applying, and maintain a security decisions log.
 
-#### [MODIFY] [blast-radius.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/rules/blast-radius.md)
+#### [MODIFY] [blast-radius.md](AI-Tools/.windsurf/rules/blast-radius.md)
 - Add **Section 10: AI-DLC Phase Gates** — blast-radius controls at each phase transition (Inception→Construction = architecture review gate, Construction→Operations = security scan gate).
 
-#### [NEW] [ai-dlc-methodology.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/rules/ai-dlc-methodology.md)
+#### [NEW] [ai-dlc-methodology.md](AI-Tools/.windsurf/rules/ai-dlc-methodology.md)
 New rule file covering:
 - AI proposes → Human validates → AI implements pattern
 - Persistent context artifacts (plans, domain models, decisions must be saved to repo)
@@ -38,13 +38,13 @@ New rule file covering:
 
 ### Skills
 
-#### [MODIFY] [github-actions/SKILL.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/skills/github-actions/SKILL.md)
+#### [MODIFY] [github-actions/SKILL.md](AI-Tools/.windsurf/skills/github-actions/SKILL.md)
 - Add **Section 9: AI-DLC Pipeline Patterns** — CI/CD patterns aligned with the three phases: PR checks for Construction phase, deployment gates for Operations phase, automated context propagation.
 
-#### [MODIFY] [kubernetes-helm/SKILL.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/skills/kubernetes-helm/SKILL.md)
+#### [MODIFY] [kubernetes-helm/SKILL.md](AI-Tools/.windsurf/skills/kubernetes-helm/SKILL.md)
 - Add **Section 9: Domain-First to IaC** — the AI-DLC pattern of Domain Design → Logical Design (cloud patterns) → Physical Design (K8s/Helm manifests).
 
-#### [NEW] [ai-dlc-operations/SKILL.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/skills/ai-dlc-operations/SKILL.md)
+#### [NEW] [ai-dlc-operations/SKILL.md](AI-Tools/.windsurf/skills/ai-dlc-operations/SKILL.md)
 New skill pack covering:
 - AI-driven monitoring & anomaly detection patterns
 - AI-proposed incident resolutions (with human-in-the-loop approval)
@@ -56,16 +56,16 @@ New skill pack covering:
 
 ### Workflows
 
-#### [MODIFY] [incident-response.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/workflows/incident-response.md)
+#### [MODIFY] [incident-response.md](AI-Tools/.windsurf/workflows/incident-response.md)
 - Add **AI-Driven Resolution** section — AI analyzes logs/metrics, proposes root cause and fix, human approves before execution.
 
-#### [NEW] [ai-dlc-inception.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/workflows/ai-dlc-inception.md)
+#### [NEW] [ai-dlc-inception.md](AI-Tools/.windsurf/workflows/ai-dlc-inception.md)
 Workflow for the Inception phase:
 - AI decomposes business intent into Units and Stories
 - Mob Elaboration ritual (team validates AI proposals)
 - Outputs: validated requirements, acceptance criteria, domain model
 
-#### [NEW] [ai-dlc-operations.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/workflows/ai-dlc-operations.md)
+#### [NEW] [ai-dlc-operations.md](AI-Tools/.windsurf/workflows/ai-dlc-operations.md)
 Workflow for the Operations phase:
 - AI-driven deployment verification
 - Anomaly detection → AI diagnosis → human-approved remediation
