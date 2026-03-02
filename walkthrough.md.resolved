@@ -1,0 +1,40 @@
+# DevOps Rules, Skills & Workflows — Walkthrough
+
+All **12 files** created under `.windsurf/` in 3 folders.
+
+---
+
+## Final Structure
+
+```
+.windsurf/
+├── rules/
+│   ├── devops-security.md      # Container hardening, secrets, RBAC, network policies, supply-chain
+│   ├── blast-radius.md         # Namespace isolation, PDB, rollback, progressive delivery, graceful shutdown
+│   └── code-quality.md         # Dockerfile lint, Helm lint, YAML validation, Node/Spring quality, Git hygiene
+├── skills/
+│   ├── github-actions/SKILL.md    # CI/CD templates (Node + Spring Boot), reusable workflows, OIDC, matrix, composites
+│   ├── kubernetes-helm/SKILL.md   # Full chart structure, deployment/network-policy/helpers templates, commands cheat sheet
+│   ├── trivy-sonarqube/SKILL.md   # Image/FS/IaC scanning, quality gates, SonarQube for Node + Spring, combined CI job
+│   └── nodejs-springboot/SKILL.md # Production Dockerfiles, health endpoints, graceful shutdown, 12-factor compliance
+└── workflows/
+    ├── ci-pipeline.md          # Build → test → scan → publish (step-by-step)
+    ├── cd-deploy.md            # Staging → prod promotion via Helm, OIDC, rollback, canary
+    ├── security-scan.md        # Local + CI Trivy & SonarQube scanning runbook
+    ├── incident-response.md    # Detect → rollback → diagnose → communicate → fix → post-mortem
+    └── helm-chart-create.md    # Scaffold → configure → validate → package → publish
+```
+
+## Key Design Decisions
+
+| Concern | Approach |
+|---------|----------|
+| **Security** | Default-deny network policies, non-root containers, OIDC auth, pinned action SHAs, Trivy + SonarQube gates |
+| **Blast Radius** | Namespace isolation, PDB, atomic Helm deploys, progressive delivery, graceful shutdown |
+| **Simplicity** | Copy-paste ready templates, values-per-env pattern, reusable workflows, cheat sheets |
+
+## How Windsurf Uses These
+
+- **Rules** → always-on guardrails (AI reads them on every prompt)
+- **Skills** → on-demand reference (AI reads when the task matches the skill)
+- **Workflows** → slash-command runbooks (invoked via `/ci-pipeline`, `/cd-deploy`, etc.)

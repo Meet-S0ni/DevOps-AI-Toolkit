@@ -1,0 +1,55 @@
+# DevOps Engineer — Rules, Skills & Workflows for Windsurf IDE
+
+Create three folders under `.windsurf/` in the workspace, each targeting a different concern for a DevOps engineer.
+
+## Folder Structure
+
+```
+.windsurf/
+├── rules/          # Global coding & security rules (always-on guardrails)
+├── skills/         # Reusable skill packs (reference docs the AI reads on demand)
+└── workflows/      # Step-by-step runbooks (slash-command style)
+```
+
+---
+
+## Proposed Files
+
+### 1. `rules/`
+
+| File | Purpose |
+|------|---------|
+| `devops-security.md` | Container image hardening, secret management, least-privilege RBAC, network policies, supply-chain security (Trivy, SonarQube gates) |
+| `blast-radius.md` | Namespace isolation, canary/blue-green patterns, resource quotas, PDB, rollback strategies, feature flags |
+| `code-quality.md` | Node.js & Spring Boot linting, dependency scanning, Dockerfile best practices, Helm lint, YAML validation |
+
+### 2. `skills/`
+
+| File | Purpose |
+|------|---------|
+| `github-actions/SKILL.md` | CI pipeline patterns — build, test, scan, deploy; reusable workflows; OIDC auth; matrix strategies |
+| `kubernetes-helm/SKILL.md` | K8s manifest & Helm chart authoring — security contexts, probes, HPA, network policies, Helm values best practices |
+| `trivy-sonarqube/SKILL.md` | Image/IaC scanning with Trivy; SonarQube quality gates; integrating both into CI |
+| `nodejs-springboot/SKILL.md` | Dockerfile patterns, health endpoints, graceful shutdown, env-config, 12-factor compliance for Node.js & Spring Boot |
+
+### 3. `workflows/`
+
+| File | Purpose |
+|------|---------|
+| `ci-pipeline.md` | End-to-end CI pipeline setup (build → test → scan → publish) |
+| `cd-deploy.md` | CD deployment to K8s via Helm (canary, rollback, namespace strategy) |
+| `security-scan.md` | Run Trivy + SonarQube scans locally or in CI and interpret results |
+| `incident-response.md` | Rollback, debug, and recover from a failed deployment |
+| `helm-chart-create.md` | Scaffold and publish a production-grade Helm chart |
+
+---
+
+## Verification Plan
+
+Since these are documentation/configuration files (no executable code), verification is:
+
+### Manual Verification
+1. Confirm all 3 folders and 12 files are created under `.windsurf/`
+2. Open each file and verify it contains well-structured, actionable content
+3. Spot-check that YAML/code examples are syntactically valid
+4. Confirm Windsurf IDE picks up `workflows/` for slash commands

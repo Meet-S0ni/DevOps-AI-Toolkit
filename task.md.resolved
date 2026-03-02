@@ -1,0 +1,19 @@
+# DevOps Rules, Skills & Workflows for Windsurf IDE
+
+## Rules
+- [x] [devops-security.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/rules/devops-security.md) — Security best practices
+- [x] [blast-radius.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/rules/blast-radius.md) — Blast radius reduction
+- [x] [code-quality.md](file:///c:/Users/MEET%20SONI/Documents/Repos/AI-Tools/.windsurf/rules/code-quality.md) — Code quality guardrails
+
+## Skills
+- [/] `github-actions/SKILL.md` — CI pipeline patterns
+- [/] `kubernetes-helm/SKILL.md` — K8s & Helm authoring
+- [/] `trivy-sonarqube/SKILL.md` — Security scanning
+- [/] `nodejs-springboot/SKILL.md` — App Dockerfile & runtime patterns
+
+## Workflows
+- [ ] `ci-pipeline.md` — End-to-end CI pipeline
+- [ ] `cd-deploy.md` — CD deployment via Helm
+- [ ] `security-scan.md` — Trivy + SonarQube scanning
+- [ ] `incident-response.md` — Rollback & recovery
+- [ ] `helm-chart-create.md` — Scaffold Helm chart
