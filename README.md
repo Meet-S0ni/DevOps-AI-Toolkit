@@ -67,3 +67,16 @@ To use these rules in a new or existing repository in Windsurf:
 1. Clone or copy the `.windsurf` folder from this toolkit into your target repository's root.
 2. Ensure the IDE's rules functionality is enabled.
 3. Instruct Windsurf via chat (e.g., *"Follow the `/ci-pipeline` workflow to setup GitHub Actions for this Node app"* or *"Act according to the rules in `.windsurf/rules/ai-dlc-methodology.md` to begin the Inception Phase for a new Payments Service"*).
+
+---
+
+## 📄 License
+
+This repository is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** license.
+
+**What this means:**
+- **✅ Use & Adapt:** You are free to use, copy, and modify these tools for your own personal or internal business projects.
+- **❌ No Commercial Sale:** You may **not** sell this toolkit or use it for primary commercial advantage or monetary compensation.
+- **ℹ️ Attribution:** You must give appropriate credit if you share or redistribute these tools.
+
+Refer to the [LICENSE](LICENSE) file for the full legal text.
