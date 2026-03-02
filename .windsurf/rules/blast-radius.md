@@ -190,3 +190,41 @@ lifecycle:
     exec:
       command: ["sh", "-c", "sleep 5"]
 ```
+
+---
+
+## 10. AI-DLC Phase Gates
+
+Following the AI-DLC methodology, **blast-radius controls** must be enforced at every phase transition.
+
+### Gate 1: Inception → Construction
+Before any code is written:
+- [ ] Domain model reviewed and approved by tech lead
+- [ ] Unit dependencies mapped — no circular dependencies
+- [ ] ADRs recorded for architecture choices
+- [ ] Security requirements identified per Unit
+- [ ] Data classification complete (PII, sensitive, public)
+
+### Gate 2: Construction → Operations
+Before any deployment:
+- [ ] All Trivy scans pass (zero CRITICAL/HIGH)
+- [ ] SonarQube quality gate passes
+- [ ] Helm lint passes with zero warnings
+- [ ] Security context set on all containers (non-root, read-only, drop ALL)
+- [ ] Network policies defined and tested
+- [ ] PDB configured for ≥ 2 replica deployments
+- [ ] Rollback procedure documented and tested
+- [ ] Load test completed (if new service or major change)
+
+### Gate 3: Operations → Production
+Before routing production traffic:
+- [ ] Canary deployment validated (error rate, latency within SLA)
+- [ ] Post-deployment health verification passes
+- [ ] Monitoring and alerting configured
+- [ ] Runbooks created for known failure modes
+- [ ] On-call team briefed on the change
+
+### Rule
+- **AI must verify gate compliance** before proposing a phase transition.
+- **AI must NOT skip gates** — if any gate item fails, AI must flag it and wait for human decision.
+- **Gate violations are logged** in `.ai-dlc/bolts/` with rationale if overridden.

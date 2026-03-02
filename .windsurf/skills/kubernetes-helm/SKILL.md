@@ -360,3 +360,90 @@ helm history my-app --namespace my-app-prod
 | Secrets in `values.yaml` | `existingSecret` + ExternalSecrets |
 | `kubectl apply` in CI | `helm upgrade --install --atomic` |
 | Single replica in prod | `minReplicas: 2` + PDB |
+
+---
+
+## 9. Domain-First to IaC (AI-DLC Pattern)
+
+Following the AI-DLC methodology, Kubernetes manifests and Helm charts are the **last** layer — generated only
+after the domain and logical design are validated.
+
+### The Three Design Layers
+
+```
+Layer 1: Domain Design        Layer 2: Logical Design        Layer 3: Physical Design
+─────────────────────        ─────────────────────          ──────────────────────
+Pure business logic          Cloud/infra patterns           K8s manifests & Helm
+
+Entities & value objects     Sync vs async comms            Deployment, Service
+Domain services              Caching strategy               HPA, PDB
+Business rules               Queue patterns                 ConfigMap, Secret
+Domain events                Data persistence               NetworkPolicy
+Validation logic             Auth/AuthZ approach            Ingress, TLS
+
+No framework deps!           Cloud-agnostic decisions       Cloud-specific implementation
+```
+
+### Workflow
+
+1. **Start with the domain model** (from `.ai-dlc/domain-model.md`)
+   - What entities exist?
+   - What are the business rules?
+   - What events are emitted?
+
+2. **Map NFRs to logical patterns**
+   - Scalability → HPA + stateless design
+   - Reliability → multi-replica + PDB + health probes
+   - Security → network policies + security context + secrets
+   - Observability → metrics endpoint + structured logging
+
+3. **Generate Helm chart from logical decisions**
+   - Each logical decision maps to a Helm template
+   - Values.yaml reflects the logical design parameters
+   - Environment overrides encode deployment topology
+
+### Example: Payment Service
+
+```markdown
+## Domain Design
+- Entity: Payment (amount, currency, status, merchant)
+- Rule: Amount must be > 0 and ≤ merchant limit
+- Event: PaymentProcessed, PaymentFailed
+
+## Logical Design
+- Async processing via message queue (decouple from merchant API)
+- At-least-once delivery with idempotency key
+- Cache merchant limits (Redis, 5 min TTL)
+- mTLS between services
+
+## Physical Design → Helm Values
+```
+
+```yaml
+# Derived from logical design decisions:
+replicaCount: 3                    # Reliability: high availability
+resources:
+  requests: { cpu: 500m, memory: 512Mi }  # Payment processing is CPU-bound
+
+# Async: needs SQS/SNS access
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/payment-sqs
+
+# mTLS: Istio sidecar
+podAnnotations:
+  sidecar.istio.io/inject: "true"
+
+# Cache: Redis dependency
+env:
+  - name: REDIS_URL
+    valueFrom:
+      secretKeyRef:
+        name: redis-credentials
+        key: url
+```
+
+### Rule
+- **Never start with Helm/K8s manifests** — always trace back to a domain decision.
+- **Every Helm value should have a "why"** — linked to a logical design choice or NFR.
+- **ADR for each pattern choice** — document why async over sync, why Redis over in-memory, etc.

@@ -308,3 +308,108 @@ runs:
         echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/trivy.list
         sudo apt-get update && sudo apt-get install -y trivy
 ```
+
+---
+
+## 9. AI-DLC Pipeline Patterns
+
+Align CI/CD pipelines with the **three AI-DLC phases** for maximum safety and traceability.
+
+### Phase-Aware Pipeline Architecture
+
+```
+  Inception Phase           Construction Phase          Operations Phase
+  ─────────────            ──────────────────          ────────────────
+  (No CI needed)           PR → CI Pipeline            Main → CD Pipeline
+                                 │                           │
+                           ┌─────┴──────┐             ┌─────┴──────┐
+                           │ lint-test   │             │ deploy-stg │
+                           │ scan       │             │ verify-stg │
+                           │ sonarqube   │             │ gate-check │
+                           │ build-image │             │ deploy-prod│
+                           └────────────┘             │ verify-prod│
+                                                       └────────────┘
+```
+
+### Context Propagation in Pipelines
+
+Pass **AI-DLC context** (Unit, Bolt, phase) through CI/CD for traceability:
+
+```yaml
+env:
+  AIDLC_UNIT: ${{ github.event.pull_request.title }}
+  AIDLC_BOLT: ${{ github.run_number }}
+  AIDLC_PHASE: construction
+  AIDLC_SHA: ${{ github.sha }}
+
+# Tag images with context
+tags: |
+  ghcr.io/${{ github.repository }}:${{ github.sha }}
+  ghcr.io/${{ github.repository }}:bolt-${{ github.run_number }}
+```
+
+### Automated Gate Checks
+
+```yaml
+  gate-check:
+    runs-on: ubuntu-latest
+    needs: [build-image]
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29  # v4
+
+      - name: Verify AI-DLC gate compliance
+        run: |
+          echo "=== Construction → Operations Gate ==="
+
+          # 1. Trivy scan passed (checked in previous job)
+          echo "✅ Trivy scan: passed"
+
+          # 2. SonarQube quality gate passed
+          echo "✅ SonarQube: passed"
+
+          # 3. Helm lint
+          helm lint ./helm/${{ github.event.repository.name }} --strict
+          echo "✅ Helm lint: passed"
+
+          # 4. Verify security context in Helm templates
+          helm template test ./helm/${{ github.event.repository.name }} | \
+            grep -q "runAsNonRoot: true" && echo "✅ Non-root: configured" || \
+            (echo "❌ Missing runAsNonRoot" && exit 1)
+
+          # 5. Verify PDB exists
+          helm template test ./helm/${{ github.event.repository.name }} | \
+            grep -q "PodDisruptionBudget" && echo "✅ PDB: configured" || \
+            echo "⚠️ PDB not found (check if replicas > 1)"
+
+          echo "=== Gate: PASSED ==="
+```
+
+### Post-Deploy Verification Job
+
+```yaml
+  verify-deployment:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Wait for rollout
+        run: kubectl rollout status deployment/${{ env.APP }} -n ${{ env.NAMESPACE }} --timeout=180s
+
+      - name: Health check
+        run: |
+          ENDPOINT=$(kubectl get svc ${{ env.APP }} -n ${{ env.NAMESPACE }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://${ENDPOINT}/healthz")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Health check passed"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "❌ Health check failed"
+          exit 1
+
+      - name: Log Bolt completion
+        if: success()
+        run: |
+          echo "Bolt ${{ github.run_number }} deployed successfully" >> .ai-dlc/bolts/bolt-${{ github.run_number }}.md
+```

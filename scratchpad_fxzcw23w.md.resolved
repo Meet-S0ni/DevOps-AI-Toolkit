@@ -1,0 +1,21 @@
+# Task: Extract content from AI-Driven Development Lifecycle Documentation
+
+## Goals
+- Navigate to `https://prod.d13rzhkk8cj2z0.amplifyapp.com/`
+- Capture all textual content, sections, headings, diagrams, and tables.
+- Return the complete content in the final report.
+
+## Progress Checklist
+- [x] Navigate to the URL
+- [x] Verify page load (React SPA)
+- [x] Read content section by section
+- [x] Scroll to bottom and ensure everything is captured
+- [x] Compile final results
+
+## Findings Summary
+- AI-DLC shifts from AI as an assistant to AI as the orchestrator.
+- Key Artefacts: Intent (purpose), Unit (cohesive work), Bolt (smallest rapid iteration).
+- Rituals: Mob Elaboration (collaborative review of AI outputs).
+- Phased Approach: Inception -> Construction -> Operations.
+- Brown-field: Context building through elevation into semantic models.
+- Human role: "Loss function" (validation, refinement, approval).

@@ -148,3 +148,45 @@ rules:
 - Run `npm audit` in CI — fail on `high` severity.
 - Avoid `eval()` and `child_process.exec()` with user input — flag as security violation.
 - Set `NODE_ENV=production` in container images.
+
+---
+
+## 9. AI-Assisted Security Review (AI-DLC)
+
+Following the AI-DLC methodology, the AI must act as a **security collaborator** — proposing fixes
+while deferring critical security decisions to humans.
+
+### AI Security Workflow
+1. **Scan** — AI runs Trivy / SonarQube and interprets results.
+2. **Triage** — AI categorizes findings by severity and exploitability.
+3. **Propose** — AI suggests a fix with risk assessment for each finding.
+4. **Wait** — Human reviews and approves before any security-related change is applied.
+5. **Log** — AI records the security decision in an ADR.
+
+### Rules
+- **Never auto-fix security vulnerabilities** — every remediation requires human approval.
+- **Maintain a security decisions log** at `.ai-dlc/architecture/decisions/` with `security-` prefix.
+- **AI must explain the vulnerability** in plain language — what it is, how it's exploitable, what the fix does.
+- **Prioritize by blast radius** — CRITICAL + publicly exposed > CRITICAL + internal > HIGH.
+- **Track accepted risks** with expiration dates — revisit quarterly.
+
+```markdown
+<!-- Example: .ai-dlc/architecture/decisions/security-adr-001.md -->
+# Security ADR-001: CVE-2024-XXXXX in base image
+
+## Severity: CRITICAL
+## Status: Remediated
+
+## Vulnerability
+Remote code execution via crafted HTTP header in Node.js < 20.11.1.
+
+## Decision
+Update base image from node:20.10-alpine to node:20.11.1-alpine.
+
+## Risk if Not Fixed
+Attackable from public internet; affects all endpoints.
+
+## Verification
+- Trivy re-scan shows CVE resolved.
+- All tests pass on updated base image.
+```

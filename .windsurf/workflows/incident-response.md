@@ -220,3 +220,106 @@ EOF
 # Remove emergency block
 kubectl delete networkpolicy emergency-deny-all -n <namespace>
 ```
+
+---
+
+## AI-Driven Incident Resolution (AI-DLC)
+
+Following the AI-DLC Operations phase pattern, the AI acts as a **first responder** —
+analyzing alerts, correlating signals, and proposing resolutions for human approval.
+
+### AI Resolution Workflow
+
+```
+Alert fires
+    │
+    ▼
+AI reads alert + linked runbook (.ai-dlc/operations/runbooks/)
+    │
+    ▼
+AI runs read-only diagnosis commands
+    │
+    ▼
+AI correlates with:
+  - Recent deployments (helm history)
+  - Other service alerts
+  - Past incidents (.ai-dlc/operations/incidents/)
+    │
+    ▼
+AI presents diagnosis + resolution options + risk levels
+    │
+    ▼
+┌──────────────────────────────┐
+│   🛑 HUMAN APPROVAL GATE    │
+│   Review → Approve/Modify   │
+└──────────────────────────────┘
+    │
+    ▼
+AI executes approved action
+    │
+    ▼
+AI verifies metrics returning to baseline
+    │
+    ▼
+AI saves incident context for future learning
+```
+
+### AI Diagnosis Template
+
+When an alert fires, the AI should produce this analysis:
+
+```markdown
+## 🚨 Incident: [Alert Name]
+
+**Time:** [timestamp]
+**Severity:** SEV-[1-4]
+**Service:** [affected service]
+**Alert:** [metric and threshold breached]
+
+### Evidence
+| Signal | Current | Baseline | Status |
+|--------|---------|----------|--------|
+| Error rate | 3.2% | 0.1% | ❌ |
+| P99 latency | 1200ms | 180ms | ❌ |
+| CPU usage | 45% | 40% | ✅ |
+| Recent deploy | 25 min ago | — | ⚠️ |
+
+### Root Cause Analysis
+[AI's assessment based on correlating the signals above]
+
+### Similar Past Incidents
+- INC-2024-11-15: [similar pattern, resolution was X]
+
+### Resolution Options
+| # | Action | Risk | ETA |
+|---|--------|------|-----|
+| 1 | Rollback to prev release | LOW | 3 min |
+| 2 | Scale up replicas | LOW | 2 min |
+| 3 | Fix forward (hotfix) | HIGH | 30 min |
+
+### Recommendation
+Option 1 — rollback. Recent deployment correlates with symptom onset.
+
+⏸️ **Awaiting approval to proceed.**
+```
+
+### Post-Incident: Save Context
+
+After resolution, AI must persist the incident for future learning:
+
+```bash
+# Save to .ai-dlc/operations/incidents/
+cat > .ai-dlc/operations/incidents/INC-$(date +%Y-%m-%d)-001.md << 'EOF'
+# Incident: [Title]
+## Root Cause: [description]
+## Resolution: [what was done]
+## Prevention: [what should change]
+## AI Learning: [what the AI should remember for next time]
+EOF
+```
+
+### Rules
+- **AI must never execute production changes without human approval** — even if confidence is high.
+- **AI must check past incidents** before proposing a resolution — avoid repeating ineffective fixes.
+- **AI must log every incident** — the operations context grows over time, improving future diagnoses.
+- **Runbooks are the AI's playbook** — keep them updated at `.ai-dlc/operations/runbooks/`.
